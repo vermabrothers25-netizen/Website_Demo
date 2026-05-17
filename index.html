@@ -64,23 +64,40 @@
       position: fixed; top: 0; left: 0; right: 0; z-index: 1001;
       background: var(--navy);
       height: 44px; overflow: hidden;
-      display: flex; align-items: center; justify-content: center;
+      display: flex; align-items: center;
       transition: height 0.38s cubic-bezier(0.22,1,0.36,1),
                   opacity 0.3s ease;
     }
     body.bar-gone #announce-bar { height: 0; opacity: 0; pointer-events: none; }
 
-    .announce-text {
+    .announce-ticker {
+      flex: 1; overflow: hidden; height: 100%;
+      display: flex; align-items: center;
+    }
+    .announce-track {
+      display: flex; align-items: center;
+      white-space: nowrap;
+      animation: ticker-scroll 28s linear infinite;
+      will-change: transform;
+    }
+    .announce-track:hover { animation-play-state: paused; }
+    @keyframes ticker-scroll {
+      0%   { transform: translateX(0); }
+      100% { transform: translateX(-50%); }
+    }
+    .announce-item {
+      display: inline-flex; align-items: center;
       font-size: 0.78rem; font-weight: 500; letter-spacing: 0.04em;
       color: rgba(255,255,255,0.92);
-      white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
-      padding: 0 40px 0 16px;
+      padding: 0 48px;
+      flex-shrink: 0;
     }
-    .announce-text strong { color: var(--gold-light); font-weight: 700; }
-    .announce-text a { color: var(--gold-light); text-decoration: underline; cursor: pointer; }
+    .announce-item strong { color: var(--gold-light); font-weight: 700; }
+    .announce-item a { color: var(--gold-light); text-decoration: underline; cursor: pointer; }
+    .announce-item .sep { margin: 0 18px; color: rgba(255,255,255,0.3); }
     .announce-dismiss {
       position: absolute; right: 14px; top: 50%; transform: translateY(-50%);
-      background: none; border: none; cursor: pointer;
+      background: none; border: none; cursor: pointer; z-index: 2;
       color: rgba(255,255,255,0.55); font-size: 1.1rem; line-height: 1;
       padding: 4px 6px; border-radius: 3px;
       transition: color 0.2s, background 0.2s;
@@ -1348,7 +1365,28 @@
       .newsletter-form { flex-direction: column; width: 100%; }
       .newsletter-form input { border-radius: 3px; min-width: 0; width: 100%; }
       .newsletter-form button { border-radius: 3px; }
-      .announce-text { font-size: 0.72rem; }
+      .announce-item { font-size: 0.72rem; padding: 0 32px; }
+
+      /* Home collection — horizontal swipe carousel */
+      .products-bg { overflow: hidden; }
+      .products-grid {
+        display: flex;
+        overflow-x: auto;
+        -webkit-overflow-scrolling: touch;
+        scroll-snap-type: x mandatory;
+        gap: 14px;
+        width: 100vw;
+        margin-left: -4vw;
+        padding: 4px 4vw 20px;
+        box-sizing: border-box;
+        scrollbar-width: none;
+      }
+      .products-grid::-webkit-scrollbar { display: none; }
+      .products-grid .product-card {
+        flex: 0 0 82vw;
+        max-width: 320px;
+        scroll-snap-align: start;
+      }
 
       /* Size guide modal */
       .sgm-box { max-height: 92vh; }
@@ -1917,10 +1955,14 @@
 
 <!-- ── ANNOUNCEMENT BAR ──────────────────────────── -->
 <div id="announce-bar">
-  <p class="announce-text">
-    <strong><i class="fas fa-truck" style="margin-right:6px;"></i>Free shipping</strong> on all orders &nbsp;·&nbsp; Use code <strong>WT15</strong> for <strong>15% off</strong> your first order
-    &nbsp;<a onclick="showPage('shop')">Shop Now →</a>
-  </p>
+  <div class="announce-ticker">
+    <div class="announce-track">
+      <!-- copy 1 -->
+      <span class="announce-item"><strong><i class="fas fa-truck" style="margin-right:6px;"></i>Free Shipping</strong> on all orders<span class="sep">✦</span>Use code <strong>WT15</strong> for <strong>15% off</strong> your first order<span class="sep">✦</span><strong>800 Thread Count</strong> · 100% Long-Staple Cotton<span class="sep">✦</span>Hotel-Quality Comfort at Home<span class="sep">✦</span><a onclick="showPage('shop')">Shop Now →</a><span class="sep">✦</span>Sateen &amp; Pinch Pleated Duvet Covers Available<span class="sep">✦</span></span>
+      <!-- copy 2 — seamless loop -->
+      <span class="announce-item"><strong><i class="fas fa-truck" style="margin-right:6px;"></i>Free Shipping</strong> on all orders<span class="sep">✦</span>Use code <strong>WT15</strong> for <strong>15% off</strong> your first order<span class="sep">✦</span><strong>800 Thread Count</strong> · 100% Long-Staple Cotton<span class="sep">✦</span>Hotel-Quality Comfort at Home<span class="sep">✦</span><a onclick="showPage('shop')">Shop Now →</a><span class="sep">✦</span>Sateen &amp; Pinch Pleated Duvet Covers Available<span class="sep">✦</span></span>
+    </div>
+  </div>
   <button class="announce-dismiss" onclick="dismissBar()" aria-label="Close announcement">✕</button>
 </div>
 
