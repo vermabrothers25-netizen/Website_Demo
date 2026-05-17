@@ -1340,13 +1340,16 @@
 
       /* Hero */
       .hero { padding-left: 4%; padding-right: 4%; }
-      .hero-content { max-width: 100%; padding: 60px 0 40px; }
-      .hero-title { font-size: clamp(1.9rem, 8vw, 3rem); line-height: 1.15; }
-      .hero-desc { font-size: 0.92rem; }
-      .hero-actions { flex-direction: column; gap: 12px; }
-      .hero-actions .btn { width: 100%; justify-content: center; box-sizing: border-box; }
-      .hero-stats { flex-direction: row; flex-wrap: wrap; gap: 16px 24px; }
+      .hero-content { max-width: 100%; padding: 20px 0 16px; }
+      .hero-title { font-size: clamp(1.9rem, 8vw, 3rem); line-height: 1.15; margin-bottom: 12px; }
+      .hero-badge { margin-bottom: 12px; }
+      .hero-desc { font-size: 0.88rem; line-height: 1.65; margin-bottom: 18px; }
+      .hero-actions { flex-direction: column; gap: 10px; }
+      .hero-actions .btn { width: 100%; justify-content: center; box-sizing: border-box; padding-top: 11px; padding-bottom: 11px; }
+      .hero-stats { flex-direction: row; flex-wrap: wrap; gap: 12px 20px; margin-top: 22px; padding-top: 18px; }
       .hero-stat { flex: 1 1 40%; }
+      .hero-stat-num { font-size: 1.7rem; }
+      .hero-stat-label { font-size: 0.66rem; }
 
       /* Trust strip */
       .trust-strip-inner { flex-wrap: wrap; }
@@ -1410,7 +1413,7 @@
       .pdp-more-colors-section { padding: 28px 4%; }
       .pdp-more-grid { grid-template-columns: repeat(3, 1fr); }
       .pdp-desc-section { padding: 28px 4%; }
-      .sticky-amazon { bottom: 16px; left: 12px; font-size: 0.76rem; padding: 9px 14px; }
+      .sticky-amazon { bottom: 18px; left: 12px; }
 
       /* Recently viewed */
       .rv-section { padding: 28px 4%; }
@@ -1420,7 +1423,8 @@
       .checkout-hero { padding: 100px 4% 32px; }
 
       /* Float cart + scroll top */
-      #float-cart { bottom: 18px; right: 16px; }
+      #float-cart { bottom: 18px; right: 14px; }
+      .fc-btn { padding: 10px 16px; font-size: 0.78rem; }
       #scroll-top { bottom: 96px; right: 16px; width: 40px; height: 40px; font-size: 0.9rem; }
     }
 
@@ -1619,6 +1623,9 @@
       transition: transform 0.2s, box-shadow 0.2s;
     }
     .sticky-amazon:hover { transform: translateY(-2px); box-shadow: 0 8px 28px rgba(0,0,0,0.25); }
+    @media (max-width: 768px) {
+      .sticky-amazon { bottom: 18px; left: 12px; padding: 10px 16px; font-size: 0.78rem; }
+    }
 
     /* ── CART BUTTON (navbar) ──────────────────────── */
     .cart-btn {
@@ -2038,16 +2045,16 @@
       </div>
       <div class="hero-stats">
         <div>
-          <div class="hero-stat-num" data-count="500" data-suffix="+">500+</div>
-          <div class="hero-stat-label">5-Star Reviews</div>
+          <div class="hero-stat-num" data-count="10000" data-suffix="+">10,000+</div>
+          <div class="hero-stat-label">Happy Customers</div>
         </div>
         <div>
-          <div class="hero-stat-num" data-count="800" data-suffix="">800</div>
+          <div class="hero-stat-num" data-count="1200" data-from="800" data-suffix="">800</div>
           <div class="hero-stat-label">Thread Count</div>
         </div>
         <div>
-          <div class="hero-stat-num" data-count="79" data-prefix="$">$79</div>
-          <div class="hero-stat-label">Starting From</div>
+          <div class="hero-stat-num" data-count="5" data-suffix="+">5+</div>
+          <div class="hero-stat-label">Years Premium Quality</div>
         </div>
       </div>
     </div>
@@ -3177,12 +3184,13 @@
   }
 
   // ── STAT COUNTER ──────────────────────────────────
-  function animateCounter(el, target, prefix, suffix, duration) {
+  function animateCounter(el, target, prefix, suffix, duration, from) {
+    var startVal = from || 0;
     var start = performance.now();
     function step(now) {
       var p = Math.min((now - start) / duration, 1);
       var eased = 1 - Math.pow(1 - p, 3);
-      el.textContent = (prefix || '') + Math.round(eased * target) + (suffix || '');
+      el.textContent = (prefix || '') + Math.round(startVal + eased * (target - startVal)).toLocaleString() + (suffix || '');
       if (p < 1) requestAnimationFrame(step);
     }
     requestAnimationFrame(step);
@@ -3191,9 +3199,10 @@
   function runHeroCounters() {
     document.querySelectorAll('.hero-stat-num[data-count]').forEach(function(el) {
       var target = parseInt(el.dataset.count, 10);
+      var from = el.dataset.from ? parseInt(el.dataset.from, 10) : 0;
       var prefix = el.dataset.prefix || '';
       var suffix = el.dataset.suffix !== undefined ? el.dataset.suffix : '';
-      animateCounter(el, target, prefix, suffix, 1600);
+      animateCounter(el, target, prefix, suffix, 1600, from);
     });
   }
 
